@@ -7,6 +7,6 @@ import { createApp } from './app'
 const app = createApp()
 const server = http.createServer(app)
 
-server.listen(3000, () => {
+server.listen(process.env['PORT'], () => {
     console.log('Server has started!')
 })
