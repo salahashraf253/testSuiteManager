@@ -5,16 +5,7 @@ const model=mongoose.model;
 
 const validationPointSchema=new Schema({
     metaData: Schema.Types.Mixed,
-    result:{
-        type:[
-            {
-                actualValue:Number,
-                expectedValue:Number,
-                status:Boolean,
-                toleranceData:String
-            }
-        ]
-    },
+    type: Schema.Types.String,
     body:Schema.Types.Mixed,
 });
 const validationPointModel=model('validationPoint',validationPointSchema);

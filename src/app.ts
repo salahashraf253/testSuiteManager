@@ -34,11 +34,15 @@ export function createApp() {
         return res.status(200).send(ret);
         
     })
-    app.post('/testCase', async(req, res) => {
+    app.post('/testCase/', async(req, res) => {
         const ret:any=await testCaseModel.create(testCase);
         return res.status(200).send(ret);
         
     })
+    app.get('/testCase/6434a1a5e7905fe655a5b0b1/', async (req, res) => {
+        testCaseModel.populate()
+    })
+
     app.put('/testCase', async(req, res) => {
         let testCase =new testCaseModel(testCaseModel.findById("6434a1a5e7905fe655a5b0b1")); 
         testCase.isSuccessful=true;

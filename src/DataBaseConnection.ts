@@ -1,8 +1,8 @@
 const mongoose=require('mongoose');
 
 
-function buildDatabase() {
-    mongoose.connect(process.env['dbURI'], { useNewUrlParser: true, useUnifiedTopology: true })
+async function buildDatabase() {
+    return mongoose.connect(process.env['dbURI'], { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log("connected to db");
     })
