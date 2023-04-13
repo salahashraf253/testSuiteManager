@@ -4,51 +4,37 @@ require('dotenv').config();
 import validationTagModel from './model/ValidationTag';
 import mongoose from 'mongoose';
 import testCaseModel from './model/TestCase';
+
+import swaggerUi from 'swagger-ui-express'
+import swaggerJsdoc from 'swagger-jsdoc'
+
 const { ObjectID, default: BSON } = require("bson");
 export function createApp() {
 
     const app = express();
+
+
     buildDatabase();
 
     app.use(express.json());
 
-    const validationTagExample:any={
-        metaData: {
-            "name": "validationTag1",
-            "description": "This is a validationTag",
-            "testSuiteRef": "testSuite1",
+    const options = {
+        definition: {
+            openapi: '3.0.0',
+            info: {
+            title: 'Hello World',
+            version: '1.0.0',
+            },
         },
-        isSuccessful: true,
+        apis: ['./src/components/**/*.openapi.yaml'],
     };
 
-    const testCase :any={
-        metaData: {
-            "name": "testCase1",
-            "description": "This is a testCase",
-        },
-        isSuccessful:false,
-        validationTagRefs:[new mongoose.Types.ObjectId("64349e56cea28645feb83ffb")]
-    }
-     app.get('/validationTags', async(req, res) => {
-        const ret:any=await validationTagModel.create(validationTagExample);;
-        return res.status(200).send(ret);
-        
-    })
-    app.post('/testCase/', async(req, res) => {
-        const ret:any=await testCaseModel.create(testCase);
-        return res.status(200).send(ret);
-        
-    })
-    app.get('/testCase/6434a1a5e7905fe655a5b0b1/', async (req, res) => {
-        testCaseModel.populate()
-    })
+    const openapiSpecification = swaggerJsdoc(options);
 
-    app.put('/testCase', async(req, res) => {
-        let testCase =new testCaseModel(testCaseModel.findById("6434a1a5e7905fe655a5b0b1")); 
-        testCase.isSuccessful=true;
-        const ret:any=await testCase.save();
-        return res.status(200).send(ret);
-    })
+    app.use('/api', swaggerUi.serve, swaggerUi.setup(openapiSpecification))
+
+
+
 
     return app
 }
