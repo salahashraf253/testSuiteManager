@@ -18,7 +18,7 @@ export function createApp() {
     definition: {
       openapi: "3.0.0",
       info: {
-        title: "Hello World",
+        title: "TRVT API",
         version: "1.0.0",
       },
     },

@@ -1,0 +1,126 @@
+paths:
+  /testSuites/{testSuiteId}/validationTags:
+    post:                 
+      tags:            
+        - ValidationTag
+      summary: Create a new validation tag linked to a test suite
+      produces:
+        - application/json
+      parameters:    
+        - name: testSuiteId
+          in: path
+          description: ID of the test suite that the created validation tag will be linked to
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/validationTag'
+     
+      responses:      
+        201:
+          description: Validation tag on a test suite is created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagOnTestSuite'
+
+  /testSuites/{testSuiteId}/testCases/{testCaseId}/validationTags:
+    post:                 
+      tags:            
+        - ValidationTag
+      summary: Create a new validation tag linked to a test case
+      produces:
+        - application/json
+      parameters:    
+        - name: testSuiteId
+          in: path
+          description: ID of the test suite that `testCaseId` belongs to
+          required: true
+          schema:
+            type: string
+        - name: testCaseId
+          in: path
+          description: ID of the test case that the created validation tag will be linked to
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/validationTag'
+     
+      responses:      
+        201:
+          description: Validation tag on a test case is created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagOnTestCase'
+
+definitions: # Schema defination for request body
+  validationTag:
+    type: object
+    properties:
+      isSuccessful:
+        type: boolean
+        example: true
+      metaData:
+        type: object
+
+  validationTagOnTestSuite:
+    type: object
+    properties:
+      id: 
+        type: string
+        example: 507f1f77bcf86cd799439011
+      isSuccessful:
+        type: boolean
+        example: true
+      parent: 
+        type: object
+        properties:
+          testSuite:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 507f1f77bcf86cd799439011
+      metaData:
+        type: object
+    
+  validationTagOnTestCase:
+    type: object
+    properties:
+      id: 
+        type: string
+        example: 507f1f77bcf86cd799439011
+      isSuccessful:
+        type: boolean
+        example: true
+      parent: 
+        type: object
+        properties:
+          testSuite:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 507f1f77bcf86cd799439011
+          testCase:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 50879873145dfbqe4f5f4f5f
+      metaData:
+        type: object
+  
+  
