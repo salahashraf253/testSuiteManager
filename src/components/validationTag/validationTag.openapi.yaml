@@ -28,6 +28,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/validationTagOnTestSuite'
+        400:
+          description: Path parameter `testSuiteId` is not a valid ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagErrorResponse'
 
   /testSuites/{testSuiteId}/testCases/{testCaseId}/validationTags:
     post:                 
@@ -64,6 +70,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/validationTagOnTestCase'
+        400:
+          description: 1. Path parameter `testSuiteId` is not a valid ID<br>2. Path parameter `testCaseId` is not a valid ID<br>3. `testCaseId` does not belong to `testSuiteId`
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagErrorResponse'
 
 definitions: # Schema defination for request body
   validationTag:
@@ -84,6 +96,8 @@ definitions: # Schema defination for request body
       isSuccessful:
         type: boolean
         example: true
+      metaData:
+        type: object
       parent: 
         type: object
         properties:
@@ -93,8 +107,13 @@ definitions: # Schema defination for request body
               id:
                 type: string
                 example: 507f1f77bcf86cd799439011
-      metaData:
-        type: object
+                
+  validationTagErrorResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: testSuiteId passed is not a valid ID
     
   validationTagOnTestCase:
     type: object
@@ -105,6 +124,8 @@ definitions: # Schema defination for request body
       isSuccessful:
         type: boolean
         example: true
+      metaData:
+        type: object
       parent: 
         type: object
         properties:
@@ -120,7 +141,5 @@ definitions: # Schema defination for request body
               id:
                 type: string
                 example: 50879873145dfbqe4f5f4f5f
-      metaData:
-        type: object
   
   
