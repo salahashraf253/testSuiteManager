@@ -142,6 +142,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/validationTagsGetResponse'
+        400:
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagErrorResponse'
   
   /testCases/validationTags:
     get:                 
@@ -189,6 +195,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/validationTagsGetResponse'
+        400:
+          description: 1. `testSuiteId` is not a valid ID<br>2. `testCaseId` is not a valid ID<br>3. `testCaseId` is not linked to `testSuiteId`<br>4. Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagErrorResponse'
     
   /testSuites/validationTags:
     get:                 
@@ -231,6 +243,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/validationTagsGetResponse'
+        400:
+          description: 1. `testSuiteId` is not a valid ID<br>2. Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagErrorResponse'
   
 
 definitions: # Schema defination for request body
