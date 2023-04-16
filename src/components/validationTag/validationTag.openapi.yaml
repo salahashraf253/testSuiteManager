@@ -106,6 +106,132 @@ paths:
               schema:
                 $ref: '#/definitions/validationTagErrorResponse'
   
+  /validationTags:
+    get:                 
+      tags:            
+        - ValidationTag
+      summary: Fetches all validation tags with optional query parameters (filters)
+      produces:
+        - application/json
+      parameters:    
+        - in: query
+          name: limit
+          schema: 
+            type: integer
+          description: limit number of entities
+        - in: query
+          name: skip
+          description: skip number of entities
+          schema: 
+            type: integer
+        - in: query
+          name: isSuccessful
+          schema: 
+            type: boolean
+        - in: query
+          name: validationPoint
+          schema:
+            type: object
+            properties:
+              validationPoint:
+                type: object
+      responses:      
+        200:
+          description: Validation tags are fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagsGetResponse'
+  
+  /testCases/validationTags:
+    get:                 
+      tags:            
+        - ValidationTag
+      summary: Fetches validation tags that are linked to test cases only
+      produces:
+        - application/json
+      parameters:    
+        - in: query
+          name: limit
+          schema: 
+            type: integer
+          description: limit number of entities
+        - in: query
+          name: skip
+          description: skip number of entities
+          schema: 
+            type: integer
+        - in: query
+          name: isSuccessful
+          schema: 
+            type: boolean
+        - in: query
+          name: testSuite.id
+          description: ID of the test suite that the validation tag belongs to as a grandparent
+          schema:
+            type: string
+        - in: query
+          name: testCase.id
+          description: ID of the test case that the validation tag is linked to as a parent
+          schema:
+            type: string
+        - in: query
+          name: validationPoint
+          schema:
+            type: object
+            properties:
+              validationPoint:
+                type: object
+      responses:      
+        200:
+          description: Validation tags are fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagsGetResponse'
+    
+  /testSuites/validationTags:
+    get:                 
+      tags:            
+        - ValidationTag
+      summary: Fetches validation tags that are linked to test suites only
+      produces:
+        - application/json
+      parameters:    
+        - in: query
+          name: limit
+          schema: 
+            type: integer
+          description: limit number of entities
+        - in: query
+          name: skip
+          description: skip number of entities
+          schema: 
+            type: integer
+        - in: query
+          name: isSuccessful
+          schema: 
+            type: boolean
+        - in: query
+          name: testSuite.id
+          description: ID of the test suite that the validation tag is linked to as a parent
+          schema:
+            type: string
+        - in: query
+          name: validationPoint
+          schema:
+            type: object
+            properties:
+              validationPoint:
+                type: object
+      responses:      
+        200:
+          description: Validation tags are fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagsGetResponse'
+  
 
 definitions: # Schema defination for request body
   validationTag:
@@ -195,6 +321,14 @@ definitions: # Schema defination for request body
         type: array
         items:
           $ref: '#/definitions/validationPointAsChild'
+  
+  validationTagsGetResponse:
+    type: object
+    properties:
+      validationTags:
+        type: array
+        items:
+          $ref: '#/definitions/validationTagGetResponse'
 
 
   validationTagErrorResponse:
