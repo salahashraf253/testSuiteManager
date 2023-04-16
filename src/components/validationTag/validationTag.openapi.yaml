@@ -3,7 +3,7 @@ paths:
     post:                 
       tags:            
         - ValidationTag
-      summary: Create a new validation tag linked to a test suite
+      summary: Creates a new validation tag linked to a test suite
       produces:
         - application/json
       parameters:    
@@ -39,7 +39,7 @@ paths:
     post:                 
       tags:            
         - ValidationTag
-      summary: Create a new validation tag linked to a test case
+      summary: Creates a new validation tag linked to a test case
       produces:
         - application/json
       parameters:    
