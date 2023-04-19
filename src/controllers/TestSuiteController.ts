@@ -23,9 +23,10 @@ export async function getAllTestSuites(request: express.Request, response: expre
 }
 
 export async function addTestSuite(request: express.Request, response: express.Response) {
-    const testSuite = await new TestSuite(request.body);
-    console.log("testSuite",testSuite);
     try {
+        const testSuite = await new TestSuite(request.body);
+        // console.log("testSuite",testSuite);
+
         const newTestSuite = await testSuite.save();
         return response.status(201).json(newTestSuite);
     } catch (err: any) {
