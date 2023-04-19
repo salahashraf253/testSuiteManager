@@ -10,7 +10,7 @@ const TestSuite = require('../model/TestSuite').TestSuite;
 
 export async function insertValidationTagForTestCase(testSuiteId: string, testCaseId: string, validationTagInfo: ValidationTagInsertion) {
     let validationTagId: Types.ObjectId | undefined = undefined;
-    
+
     try {
         // Check if test case exists
         const testCase = await testCaseModel.findById(testCaseId, { validationTagRefs: false, _v: false }).exec();
@@ -30,20 +30,18 @@ export async function insertValidationTagForTestCase(testSuiteId: string, testCa
         }
 
         // Prepare validation tag and insert it to the DB
-        Object.assign(validationTagInfo, {
-            parent: {
-                testCase: {
-                    id: testCaseId
-                },
-                testSuite: {
-                    id: testSuiteId
-                }
+        validationTagInfo.parent = {
+            testCase: {
+                id: new Types.ObjectId(testCaseId)
+            },
+            testSuite: {
+                id: new Types.ObjectId(testSuiteId)
             }
-        });
+        };
         const validationTag = await validationTagModel.create(validationTagInfo);
         console.log(validationTag);
         validationTagId = validationTag._id;
-        
+
         // Add validation tag id to test case in the database
         await addValidationTagToTestCase(testCaseId, { id: validationTagId });
         return _idToid(validationTag.toJSON())
