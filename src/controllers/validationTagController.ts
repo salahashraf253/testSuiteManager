@@ -1,31 +1,22 @@
 import express from 'express';
-import {  } from '../services/validationTagService'
+import { insertValidationTagForTestCase } from '../services/validationTagService'
 import { ValidationTagInsertion } from '../interfaces/validationTagInterfaces'
-import { NotFoundError } from '../shared/errors'
+import { LinkingResourcesError, NotFoundError } from '../shared/errors'
 
 export async function createValidationTagForTestCase(req: express.Request, res: express.Response) {
-
+    
     const testSuiteId = req.params.testSuiteId;
     const testCaseId = req.params.testCaseId;
 
-    // Check if test suite exists
-    // Check if test case exists
-    // Check if testCaseId belongs to testSuiteId
+    const validationTagInfo: ValidationTagInsertion = req.body; 
 
     try {
-
+        const validationTag = await insertValidationTagForTestCase(testSuiteId, testCaseId, validationTagInfo);
+        res.status(201).send(validationTag);
+    } catch (err: unknown) {
+        if (err instanceof NotFoundError || err instanceof LinkingResourcesError)
+            res.status(err.status).send({ message: err.message });
+        else
+            res.status(500).send({ message: 'Server Error' });
     }
-
-    
-    
-
-
-
-    // const testCaseInfo: TestCaseInsertion = req.body
-    // try {
-    //     const testCase = await insertTestCase(testSuiteId, testCaseInfo)
-    //     res.status(201).send(testCase)
-    // } catch (err: unknown) {
-    //     res.status(400).send({ error: 'Error while creating test case.' })
-    // }
 }

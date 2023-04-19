@@ -6,6 +6,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import TestSuiteRoutes from "./routes/TestSuiteRoutes";
 import { testCaseRouter }  from "./routes/testCaseRoutes";
+import { validationTagRouter } from "./routes/validationTagRoutes";
 
 export function createApp() {
   const app = express();
@@ -17,7 +18,8 @@ export function createApp() {
   }));
 
   app.use(TestSuiteRoutes);
-  app.use(testCaseRouter)
+  app.use(testCaseRouter);
+  app.use(validationTagRouter);
   
   const options = {
     definition: {
