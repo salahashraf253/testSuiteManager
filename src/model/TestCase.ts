@@ -1,20 +1,42 @@
-import mongoose from 'mongoose';
-const Schema=mongoose.Schema;
-const model=mongoose.model;
+import mongoose, { Types } from 'mongoose';
+const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-const testCaseSchema=new Schema({
-    metaData: Schema.Types.Mixed,
-    isSuccessful:Boolean,
-    parentInfo:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'testSuite'
+const testCaseSchema = new Schema<TestCaseBase>({
+    metaData: {
+        type: Schema.Types.Mixed,
+        default: {}
     },
-    validationTagRefs:{
+    isSuccessful: {
+        type: Schema.Types.Boolean,
+        default: true
+    },
+    parent: {
+        testSuite: {
+            id: {
+                type:mongoose.Schema.Types.ObjectId,
+                ref:'testSuite'
+            }
+        }
+    },
+    validationTagRefs: {
         type:[mongoose.Schema.Types.ObjectId],
         ref:'validationTag'
     },
 });
 
-const testCaseModel=model('testCase',testCaseSchema);
+const testCaseModel = model<TestCaseBase>('testCase',testCaseSchema);
 export default testCaseModel;
 
+
+
+interface TestCaseBase {
+    metaData: object,
+    isSuccessful: boolean,
+    validationTagRefs: Types.ObjectId[],
+    parent: {
+        testSuite: {
+            id: Types.ObjectId
+        }
+    }
+}

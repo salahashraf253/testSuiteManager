@@ -13,12 +13,15 @@ paths:
           type: string
           required: True
           description: Id of the testSuite that the created testCase will be linked to
-      - in: body          
+      requestBody:          
         name: create TestCase     
         description: It enables a user to create a testCase that belongs to a specified testSuite
         required: True
-        schema:          
-          $ref: '#/definitions/testCase' 
+        content:
+          application/json:
+            schema:          
+              $ref: '#/definitions/testCase' 
+
       responses:      
         201:
           description: An object with testCase details
@@ -26,6 +29,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/testCaseResponse'
+
+
   /testCases/{testCaseId}:
     get:                 
       tags:            
@@ -113,6 +118,9 @@ definitions:        # Schema defination for request body
   testCaseResponse:
     type: object
     properties:
+      id:
+        type: string
+        example: 507f1f77bcf86cd799439011
       isSuccessful:
         type: boolean
       metaData:
