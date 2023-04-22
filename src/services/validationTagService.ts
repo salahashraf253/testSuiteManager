@@ -109,18 +109,14 @@ export async function getValidationTag(validationTagId: string) {
     }
 
     // Get all validation points documents from given references and add them to the returned object
-    let validationPoints = [];
-    for (const validationPointRef of validationTag.validationPointRefs) {
-        const validationPoint = await validationPointModel.findById(validationPointRef, { __v: false }).exec();
-        if (!validationPoint) {
-            throw new NotFoundError(`Validation point with id '${validationPointRef}' was not found!`);
-        }
-        validationPoints.push(validationPoint);
+    const validationPoints = await validationPointModel.find({ _id: { $in: validationTag.validationPointRefs } }, { __v: false });
+    if (!validationPoints) {
+        throw new NotFoundError(`Validation point was not found!`);
     }
 
-    // Remove `validationPointRefs` from the returned object
+    // Remove validationPointRefs from the returned object
     let validationTagObj: any = validationTag.toJSON();
     validationTagObj.validationPointRefs = undefined;
-    return _idToid({ ...validationTagObj, validationPoints });
 
+    return _idToid({ ...validationTagObj, validationPoints });
 }
