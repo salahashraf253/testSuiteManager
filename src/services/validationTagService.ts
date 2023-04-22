@@ -54,3 +54,49 @@ export async function insertValidationTagForTestCase(testSuiteId: string, testCa
         throw err;
     }
 }
+
+export async function insertValidationTagForTestSuite(testSuiteId: string, validationTagInfo: ValidationTagInsertion) {
+    let validationTagId: Types.ObjectId | undefined = undefined;
+
+    try {
+        // Check if test suite exists
+        const testSuite = await TestSuite.findById(testSuiteId, { testCaseRefs: false, validationTagRefs: false, _v: false }).exec();
+        if (!testSuite) {
+            throw new NotFoundError(`Test Suite with id '${testSuiteId}' was not found!`);
+        }
+
+        // Prepare validation tag and insert it to the DB
+        validationTagInfo.parent = {
+            testSuite: {
+                id: new Types.ObjectId(testSuiteId)
+            }
+        };
+        const validationTag = await validationTagModel.create(validationTagInfo);
+        console.log(validationTag);
+        validationTagId = validationTag._id;
+
+        // Add validation tag id to test suite in the database
+        await addValidationTagToTestSuite(testSuiteId, { id: validationTagId });
+        return _idToid(validationTag.toJSON())
+
+    } catch (err: unknown) {
+        console.log(err);
+        if (validationTagId) {
+            await validationTagModel.findByIdAndDelete(validationTagId);
+        }
+        throw err;
+    }
+}
+
+export async function addValidationTagToTestSuite(testSuiteId: string, validationTag: { id?: Types.ObjectId, _id?: Types.ObjectId } ) {
+    try {
+        const t = await TestSuite.findByIdAndUpdate(testSuiteId, {
+            $push: {
+                validationTagRefs: (validationTag.id) ? validationTag.id : validationTag._id
+            }
+        })
+        
+    } catch (err: unknown) {
+        throw new LinkingResourcesError(`Couldn't link validation tag to test test suite with id '${testSuiteId}'`)
+    }
+}
