@@ -10,12 +10,11 @@ import {
 
 export const validationTagRouter = express.Router()
 
-validationTagRouter.post('/testSuites/:testSuiteId/testCases/:testCaseId/validationTags', createValidationTagForTestCase);
-validationTagRouter.post('/testSuites/:testSuiteId/validationTags', createValidationTagForTestSuite);
+validationTagRouter.post('/validationTags/testSuites/:testSuiteId/testCases/:testCaseId', createValidationTagForTestCase);
+validationTagRouter.post('/validationTags/testSuites/:testSuiteId', createValidationTagForTestSuite);
+
+validationTagRouter.get('/validationTags/testCases', fetchValidationTagsForTestCase);
+validationTagRouter.get('/validationTags/testSuites', fetchValidationTagsForTestSuite);
 
 validationTagRouter.get('/validationTags/:validationTagId', fetchValidationTag);
 validationTagRouter.get('/validationTags', fetchValidationTags);
-
-//! Change route path
-validationTagRouter.get('/testCas/validationTags', fetchValidationTagsForTestCase);
-validationTagRouter.get('/testSuites/validationTags', fetchValidationTagsForTestSuite);

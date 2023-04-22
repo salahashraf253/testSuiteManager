@@ -163,5 +163,24 @@ export async function getValidationTagsForTestCase() {
     });
 }
 
-// TODO: Implement this function
-export async function getValidationTagsForTestSuite() { }
+export async function getValidationTagsForTestSuite() {
+    // Get all validation tags, with validationPointRefs substituted with their actual documents
+    const validationTags = await validationTagModel
+        .find({ 'parent.testCase': { $exists: false } }, { __v: false })
+        .populate('validationPointRefs', { __v: false });
+
+    if (!validationTags) {
+        throw new NotFoundError(`Error listing all validation tags!`);
+    }
+
+    // Map validationTags to their embedded form
+    return validationTags.map((validationTag) => {
+        const validationPoints = validationTag.validationPointRefs;
+
+        // Remove validationPointRefs from the returned object
+        let validationTagObj: any = validationTag.toJSON();
+        validationTagObj.validationPointRefs = undefined;
+
+        return _idToid({ ...validationTagObj, validationPoints });
+    });
+}
