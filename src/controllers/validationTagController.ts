@@ -76,10 +76,19 @@ export async function fetchValidationTags(req: express.Request, res: express.Res
 
 }
 
-// TODO: Implemnet this function
 export async function fetchValidationTagsForTestCase(req: express.Request, res: express.Response) {
-    // getValidationTagsForTestCase()
-    res.status(501).send({ message: 'Not Implemented' });
+    try {
+        //TODO: query params and filters should be passed to the service
+        const validationTags = await getValidationTagsForTestCase();
+        res.status(200).send(validationTags);
+    } catch (err: unknown) {
+        if (err instanceof NotFoundError || err instanceof LinkingResourcesError) {
+            res.status(err.status).send({ message: err.message });
+        } else {
+            res.status(500).send({ message: 'Server Error' });
+        }
+    }
+
 }
 
 // TODO: Implemnet this function

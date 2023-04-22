@@ -15,5 +15,7 @@ validationTagRouter.post('/testSuites/:testSuiteId/validationTags', createValida
 
 validationTagRouter.get('/validationTags/:validationTagId', fetchValidationTag);
 validationTagRouter.get('/validationTags', fetchValidationTags);
-validationTagRouter.get('/testCases/validationTags', fetchValidationTagsForTestCase);
+
+//! Change route path
+validationTagRouter.get('/testCas/validationTags', fetchValidationTagsForTestCase);
 validationTagRouter.get('/testSuites/validationTags', fetchValidationTagsForTestSuite);
