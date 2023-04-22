@@ -1,7 +1,11 @@
 import express from "express";
 import {
     createValidationTagForTestCase,
-    createValidationTagForTestSuite
+    createValidationTagForTestSuite,
+    fetchValidationTag,
+    fetchValidationTags,
+    fetchValidationTagsForTestCase,
+    fetchValidationTagsForTestSuite
 } from "../controllers/validationTagController";
 
 export const validationTagRouter = express.Router()
@@ -9,7 +13,7 @@ export const validationTagRouter = express.Router()
 validationTagRouter.post('/testSuites/:testSuiteId/testCases/:testCaseId/validationTags', createValidationTagForTestCase);
 validationTagRouter.post('/testSuites/:testSuiteId/validationTags', createValidationTagForTestSuite);
 
-// validationTagRouter.get('/validationTags/:validationTagId', getValidationTag);
-// validationTagRouter.get('/validationTags', getValidationTags);
-// validationTagRouter.get('/testCases/validationTags', getValidationTagsForTestCase);
-// validationTagRouter.get('/testSuites/validationTags', getValidationTagsForTestSuite);
+validationTagRouter.get('/validationTags/:validationTagId', fetchValidationTag);
+validationTagRouter.get('/validationTags', fetchValidationTags);
+validationTagRouter.get('/testCases/validationTags', fetchValidationTagsForTestCase);
+validationTagRouter.get('/testSuites/validationTags', fetchValidationTagsForTestSuite);
