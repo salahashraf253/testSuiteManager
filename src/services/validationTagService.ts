@@ -120,3 +120,30 @@ export async function getValidationTag(validationTagId: string) {
 
     return _idToid({ ...validationTagObj, validationPoints });
 }
+
+export async function getValidationTags() {
+    // Get all validation tags documents, with validationPointRefs populated
+    const validationTags = await validationTagModel.find({}, { __v: false }).populate('validationPointRefs', { __v: false });
+
+    if (!validationTags) {
+        throw new NotFoundError(`Error listing all validation tags!`);
+    }
+
+    // Map validationTags to their embedded form
+    return validationTags.map((validationTag) => {
+        const validationPoints = validationTag.validationPointRefs;
+
+        // Remove validationPointRefs from the returned object
+        let validationTagObj: any = validationTag.toJSON();
+        validationTagObj.validationPointRefs = undefined;
+
+        return _idToid({ ...validationTagObj, validationPoints });
+    });
+}
+
+
+// TODO: Implement this function
+export async function getValidationTagsForTestCase() { }
+
+// TODO: Implement this function
+export async function getValidationTagsForTestSuite() { }
