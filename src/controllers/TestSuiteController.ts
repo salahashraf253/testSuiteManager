@@ -15,7 +15,23 @@ export async function getTestSuiteById(request: express.Request, response: expre
 
 export async function getAllTestSuites(request: express.Request, response: express.Response) {
     try {
-        const testSuites = await TestSuite.find();
+        const page: number = parseInt(request.query.page as string, 10) || 1;
+        const limit: number = parseInt(request.query.limit as string, 10) || 10;
+        let queryObject: {[key: string]: any} = {
+            "isSuccessful": request.query.isSuccessful || "",
+            'metaData.name': request.query.name || "",
+            "metaData.executablePath": request.query.executablePath || "",
+            "metaData.author": request.query.author || ""
+        };
+        for (let key in queryObject) {
+            if (!queryObject[key]) {
+                delete queryObject[key];
+            }
+        }
+        const testSuites = await TestSuite.find(queryObject)
+        .skip((page - 1) * limit)
+        .limit(limit);
+
         return response.json(testSuites);
     } catch (err: any) {
         response.status(500).json({ message: err.message });
