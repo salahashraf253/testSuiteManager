@@ -1,7 +1,7 @@
 
 import express from 'express'
 import { getTestCaseById, insertTestCase, listTestCases } from '../services/testCaseService'
-import { TestCaseInsertion } from '../interfaces/testCaseInterfaces'
+import { TestCaseInsertion, TestCaseListingOptions } from '../interfaces/testCaseInterfaces'
 import { NotFoundError } from '../shared/errors'
 
 export async function fetchingTestCaseById(req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -34,8 +34,10 @@ export async function creatingTestCase(req: express.Request, res: express.Respon
 
 export async function listingTestCases(req: express.Request, res: express.Response) {
 
+    // TODO: Options Validation is Required at somepoint
+    const listingOptions: TestCaseListingOptions = req.query
     try {   
-        const testCases = await listTestCases()
+        const testCases = await listTestCases(listingOptions)
         res.status(200).send(testCases)
     } catch (err: unknown) {
         res.status(500).send({ error: 'Server Error' })
