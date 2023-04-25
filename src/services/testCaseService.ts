@@ -47,11 +47,11 @@ export async function insertTestCase(testSuiteId: string, testCaseInfo: TestCase
 
 export async function addTestCaseToTestSuite(testSuiteId: string, testCase: { id?: Types.ObjectId, _id?: Types.ObjectId } ) {
     try {
-        const t = await TestSuite.findByIdAndUpdate(testSuiteId, {
+        await TestSuite.findByIdAndUpdate(testSuiteId, {
             $push: {
                 testCaseRef: (testCase.id) ? testCase.id : testCase._id
             }
-        })
+        }).orFail()
         
     } catch (err: unknown) {
         throw new LinkingResourcesError(`Couldn't link validation tag to test case with id '${testSuiteId}'`)
@@ -64,7 +64,7 @@ export async function addValidationTagToTestCase(testCaseId: string, validationT
             $push: {
                 validationTagRefs: (validationTag.id) ? validationTag.id : validationTag._id
             }
-        })
+        }).orFail()
     } catch (err: unknown) {
         throw new LinkingResourcesError(`Couldn't link validation tag to test case with id '${testCaseId}'`)
     }
