@@ -76,10 +76,6 @@ paths:
         schema: 
           type: boolean
       - in: query
-        name: testSuite.id
-        schema:
-          type: string
-      - in: query
         name: validationTag
         schema:
           type: object
@@ -89,14 +85,18 @@ paths:
           required:
             - validationTag
       - in: query
-        name: validationPoint
+        name: testSuite
         schema:
           type: object
           properties:
-            validationPoint:
+            testSuite:
               type: object
-          required:
-            - validationPoint
+              properties:
+                id: 
+                  type: string
+                  example: "507f1f77bcf86cd799439011"
+              required:
+                - id
         
       responses:      
         200:

@@ -1,22 +1,23 @@
 import mongoose from 'mongoose';
-const Schema=mongoose.Schema;
-const model=mongoose.model;
+const Schema = mongoose.Schema;
+const model = mongoose.model;
 
-const testSuiteSchema=new Schema({
+const testSuiteSchema = new Schema({
     metaData: Schema.Types.Mixed,
-    isSuccessful:Boolean,
-    testCaseRef:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'testCase'
+    isSuccessful: Boolean,
+    testCaseRef: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'testCase'
     },
 
-    validationTag:{
-        type:[mongoose.Schema.Types.ObjectId],
-        ref:'validationTag'
+    validationTagRefs: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'validationTag',
+        default: []
     }
 
 });
 
-const TestSuite=model('testSuite',testSuiteSchema);
+const TestSuite = model('testSuite', testSuiteSchema);
 // export default TestSuite;
-module.exports = {TestSuite};
+module.exports = { TestSuite };

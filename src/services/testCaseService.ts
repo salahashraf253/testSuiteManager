@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { TestCaseInsertion } from "../interfaces/testCaseInterfaces";
+import { TestCaseInsertion, TestCaseListingOptions } from "../interfaces/testCaseInterfaces";
 import testCaseModel from "../model/TestCase";
 import { LinkingResourcesError, NotFoundError } from "../shared/errors";
 import { _idToid } from "../shared/utils";
@@ -9,7 +9,7 @@ const TestSuite = require('../model/TestSuite').TestSuite;
 export async function getTestCaseById(testCaseId: string) {
 
     try {
-        const testCase = await testCaseModel.findById(testCaseId, { validationTagRefs: false, _v: false }).exec()
+        const testCase = await testCaseModel.findById(testCaseId, { validationTagRefs: false, __v: false }).exec()
         if(!testCase) {
             throw new NotFoundError(`Test Case with id '${testCaseId}' was not found!`)
         }
@@ -47,11 +47,11 @@ export async function insertTestCase(testSuiteId: string, testCaseInfo: TestCase
 
 export async function addTestCaseToTestSuite(testSuiteId: string, testCase: { id?: Types.ObjectId, _id?: Types.ObjectId } ) {
     try {
-        const t = await TestSuite.findByIdAndUpdate(testSuiteId, {
+        await TestSuite.findByIdAndUpdate(testSuiteId, {
             $push: {
                 testCaseRef: (testCase.id) ? testCase.id : testCase._id
             }
-        })
+        }).orFail()
         
     } catch (err: unknown) {
         throw new LinkingResourcesError(`Couldn't link validation tag to test case with id '${testSuiteId}'`)
@@ -64,16 +64,32 @@ export async function addValidationTagToTestCase(testCaseId: string, validationT
             $push: {
                 validationTagRefs: (validationTag.id) ? validationTag.id : validationTag._id
             }
-        })
+        }).orFail()
     } catch (err: unknown) {
         throw new LinkingResourcesError(`Couldn't link validation tag to test case with id '${testCaseId}'`)
     }
 }
 
 // TODO: add filteration options
-export async function listTestCases() {
+export async function listTestCases(listingOptions: TestCaseListingOptions) {
     try {
-        const testCases = await testCaseModel.find({}, { validationTagRefs: false }).exec()
+        const { skip, limit, testSuite, ...filtering } = listingOptions
+        const options = filtering
+        if (testSuite &&  testSuite.id) Object.assign(options, {
+            parent: {
+                testSuite: {
+                    id: new Types.ObjectId(testSuite.id)
+                }
+            }
+        })
+
+        const query = testCaseModel.find(options, { validationTagRefs: false, __v: false })
+        if(skip) {
+            query.sort({ _id: 1 }) 
+            query.skip(skip)
+        }
+        if(limit) query.limit(limit)
+        const testCases = await query.exec()
         return testCases.map(testCase =>_idToid(testCase.toJSON()))
     } catch (err: unknown) {
         throw err

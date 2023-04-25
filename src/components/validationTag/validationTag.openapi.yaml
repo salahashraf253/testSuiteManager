@@ -1,5 +1,5 @@
 paths:
-  /testSuites/{testSuiteId}/validationTags:
+  /validationTags/testSuites/{testSuiteId}:
     post:                 
       tags:            
         - ValidationTag
@@ -35,7 +35,7 @@ paths:
               schema:
                 $ref: '#/definitions/validationTagErrorResponse'
 
-  /testSuites/{testSuiteId}/testCases/{testCaseId}/validationTags:
+  /validationTags/testSuites/{testSuiteId}/testCases/{testCaseId}:
     post:                 
       tags:            
         - ValidationTag
@@ -43,15 +43,15 @@ paths:
       produces:
         - application/json
       parameters:    
-        - name: testSuiteId
-          in: path
-          description: ID of the test suite that `testCaseId` belongs to
-          required: true
-          schema:
-            type: string
         - name: testCaseId
           in: path
           description: ID of the test case that the created validation tag will be linked to
+          required: true
+          schema:
+            type: string
+        - name: testSuiteId
+          in: path
+          description: ID of the test suite that `testCaseId` belongs to
           required: true
           schema:
             type: string
@@ -149,7 +149,7 @@ paths:
               schema:
                 $ref: '#/definitions/validationTagErrorResponse'
   
-  /testCases/validationTags:
+  /validationTags/testCases:
     get:                 
       tags:            
         - ValidationTag
@@ -202,7 +202,7 @@ paths:
               schema:
                 $ref: '#/definitions/validationTagErrorResponse'
     
-  /testSuites/validationTags:
+  /validationTags/testSuites:
     get:                 
       tags:            
         - ValidationTag
@@ -242,7 +242,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/validationTagsGetResponse'
+                $ref: '#/definitions/validationTagsGetResponseForTestSuites'
         400:
           description: 1. `testSuiteId` is not a valid ID<br>2. Invalid query parameters
           content:
@@ -296,20 +296,51 @@ definitions: # Schema defination for request body
       parent: 
         type: object
         properties:
-          testSuite:
-            type: object
-            properties:
-              id:
-                type: string
-                example: 507f1f77bcf86cd799439011
           testCase:
             type: object
             properties:
               id:
                 type: string
                 example: 50879873145dfbqe4f5f4f5f
+          testSuite:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 507f1f77bcf86cd799439011
 
   validationTagGetResponse:
+    type: object
+    properties:
+      id: 
+        type: string
+        example: 507f1f77bcf86cd799439011
+      isSuccessful:
+        type: boolean
+        example: true
+      metaData:
+        type: object
+      parent: 
+        type: object
+        properties:
+          testCase:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 50879873145dfbqe4f5f4f5f
+          testSuite:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 507f1f77bcf86cd799439011
+      validationPoints:
+        type: array
+        items:
+          $ref: '#/definitions/validationPointAsChild'
+  
+  validationTagGetResponseForTestSuites:
     type: object
     properties:
       id: 
@@ -329,24 +360,21 @@ definitions: # Schema defination for request body
               id:
                 type: string
                 example: 507f1f77bcf86cd799439011
-          testCase:
-            type: object
-            properties:
-              id:
-                type: string
-                example: 50879873145dfbqe4f5f4f5f
       validationPoints:
         type: array
         items:
           $ref: '#/definitions/validationPointAsChild'
+
   
   validationTagsGetResponse:
-    type: object
-    properties:
-      validationTags:
-        type: array
-        items:
-          $ref: '#/definitions/validationTagGetResponse'
+    type: array
+    items:
+      $ref: '#/definitions/validationTagGetResponse'
+  
+  validationTagsGetResponseForTestSuites:
+    type: array
+    items:
+      $ref: '#/definitions/validationTagGetResponseForTestSuites'
 
 
   validationTagErrorResponse:

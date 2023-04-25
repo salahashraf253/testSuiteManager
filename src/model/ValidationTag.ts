@@ -2,50 +2,6 @@ import mongoose, { Types } from 'mongoose';
 const Schema = mongoose.Schema;
 const model = mongoose.model;
 
-
-// const validationTagSchema = new Schema<ValidationTagBase>({
-//     metaData: {
-//         type: Schema.Types.Mixed,
-//         default: {},
-//         required: true
-//     },
-//     isSuccessful: {
-//         type: Schema.Types.Boolean,
-//         default: true,
-//         required: true
-//     },
-//     parent: {
-//         type: Map,
-//         of: new Schema({
-//             testCase: {
-//                 type: Map,
-//                 of: new Schema({
-//                     id: {
-//                         type: mongoose.Schema.Types.ObjectId,
-//                         ref: 'testCase'
-//                     }
-//                 })
-//             },
-//             testSuite: {
-//                 type: Map,
-//                 of: new Schema({
-//                     id: {
-//                         type: mongoose.Schema.Types.ObjectId,
-//                         ref: 'testSuite'
-//                     }
-//                 })
-//             }
-//         }),
-//         required: true
-//     },
-//     validationPointRefs: {
-//         type: [mongoose.Schema.Types.ObjectId],
-//         ref: 'validationPoint',
-//         default: []
-//     },
-// });
-
-
 const validationTagSchema = new Schema<ValidationTagBase>({
     metaData: {
         type: Schema.Types.Mixed,
