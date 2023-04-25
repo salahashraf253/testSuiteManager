@@ -55,7 +55,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/TestSuiteErrorResponse'
-  /TestSuites/create:
     post:                 
       tags:            
         - TestSuite
