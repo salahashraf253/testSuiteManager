@@ -7,8 +7,10 @@ import {
     getValidationTagsForTestCase,
     getValidationTagsForTestSuite
 } from '../services/validationTagService'
-import { ValidationTagInsertion } from '../interfaces/validationTagInterfaces'
+import { ValidationTagInsertion, ValidationTagListingOptions } from '../interfaces/validationTagInterfaces'
 import { LinkingResourcesError, NotFoundError } from '../shared/errors'
+const qs = require('qs');
+
 
 export async function createValidationTagForTestCase(req: express.Request, res: express.Response) {
 
@@ -62,9 +64,11 @@ export async function fetchValidationTag(req: express.Request, res: express.Resp
 }
 
 export async function fetchValidationTags(req: express.Request, res: express.Response) {
+    const parsedQuery = qs.parse(req.query, { allowDots: true });
+    console.log(parsedQuery)
+    const filters: ValidationTagListingOptions = parsedQuery;
     try {
-        //TODO: query params and filters should be passed to the service
-        const validationTags = await getValidationTags();
+        const validationTags = await getValidationTags(filters);
         res.status(200).send(validationTags);
     } catch (err: unknown) {
         if (err instanceof NotFoundError || err instanceof LinkingResourcesError) {

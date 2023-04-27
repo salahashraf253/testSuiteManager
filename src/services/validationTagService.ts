@@ -3,9 +3,10 @@ import validationTagModel from "../model/ValidationTag";
 import validationPointModel from "../model/ValidationPoint";
 import testCaseModel from "../model/TestCase";
 import { LinkingResourcesError, NotFoundError } from "../shared/errors";
-import { _idToid } from "../shared/utils";
-import { ValidationTagInsertion } from "../interfaces/validationTagInterfaces";
+import { _idToid, flattenObject } from "../shared/utils";
+import { ValidationTagInsertion, ValidationTagListingOptions } from "../interfaces/validationTagInterfaces";
 import { addValidationTagToTestCase } from "./testCaseService";
+const qs = require('qs');
 const TestSuite = require('../model/TestSuite').TestSuite;
 
 export async function insertValidationTagForTestCase(testSuiteId: string, testCaseId: string, validationTagInfo: ValidationTagInsertion) {
@@ -121,24 +122,66 @@ export async function getValidationTag(validationTagId: string) {
     return _idToid({ ...validationTagObj, validationPoints });
 }
 
-export async function getValidationTags() {
-    // Get all validation tags, with validationPointRefs substituted with their actual documents
-    const validationTags = await validationTagModel.find({}, { __v: false }).populate('validationPointRefs', { __v: false });
 
-    if (!validationTags) {
-        throw new NotFoundError(`Error listing all validation tags!`);
+export async function getValidationTags(filters: ValidationTagListingOptions) {
+
+    try {
+        // TODO: add validationPoint filtering
+        const { skip, limit, testSuite, testCase, ...options } = filters;
+
+        // Handle parent filtering
+        let parent = {};
+
+        if (testSuite && testSuite.id) Object.assign(parent, {
+            testSuite: {
+                id: testSuite.id
+            }
+        });
+
+        if (testCase && testCase.id) Object.assign(parent, {
+            testCase: {
+                id: testCase.id
+            }
+        });
+
+        if (testSuite && testSuite.id || testCase && testCase.id) {
+            Object.assign(options, { parent: parent });
+        }
+
+        const dotNotationOptions = flattenObject(options);
+        console.log(dotNotationOptions)
+
+        // Get all validation tags, with validationPointRefs substituted with their actual documents
+        const query = validationTagModel
+            .find(dotNotationOptions, { __v: false })
+            .populate('validationPointRefs', { __v: false });
+
+        // Handle pagination
+        if (skip) {
+            query.sort({ _id: 1 }).skip(skip);
+        }
+        if (limit) {
+            query.limit(limit);
+        }
+
+        const validationTags = await query.exec();
+        if (!validationTags) {
+            throw new NotFoundError(`Error listing all validation tags!`);
+        }
+
+        return validationTags.map((validationTag) => {
+            // validationPointRefs are now populated and become the actual validation points
+            const validationPoints = validationTag.validationPointRefs;
+
+            // Remove validationPointRefs from the returned object
+            let validationTagObj: any = validationTag.toJSON();
+            validationTagObj.validationPointRefs = undefined;
+
+            return _idToid({ ...validationTagObj, validationPoints });
+        });
+    } catch (err: unknown) {
+        throw err;
     }
-
-    // Map validationTags to their embedded form
-    return validationTags.map((validationTag) => {
-        const validationPoints = validationTag.validationPointRefs;
-
-        // Remove validationPointRefs from the returned object
-        let validationTagObj: any = validationTag.toJSON();
-        validationTagObj.validationPointRefs = undefined;
-
-        return _idToid({ ...validationTagObj, validationPoints });
-    });
 }
 
 export async function getValidationTagsForTestCase() {

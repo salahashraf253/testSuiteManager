@@ -9,3 +9,16 @@ export function _idToid<T extends { _id: Types.ObjectId } >(resource: T): Omit<T
     }) as T & { id: Types.ObjectId }
 
 }
+
+// Convert a nested object to a flattened object with dot notation
+export function flattenObject(obj: object, prefix = '') {
+    return Object.keys(obj).reduce((acc, key) => {
+        const newKey = prefix ? `${prefix}.${key}` : key;
+        if (typeof obj[key as keyof typeof obj] === 'object') {
+            Object.assign(acc, flattenObject(obj[key as keyof typeof obj], newKey));
+        } else {
+            acc[newKey as keyof typeof obj] = obj[key as keyof typeof obj];
+        }
+        return acc;
+    }, {});
+}
