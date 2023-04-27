@@ -4,7 +4,7 @@ import validationPointModel from "../model/ValidationPoint";
 import testCaseModel from "../model/TestCase";
 import { LinkingResourcesError, NotFoundError } from "../shared/errors";
 import { _idToid, flattenObject } from "../shared/utils";
-import { ValidationTagInsertion, ValidationTagListingOptions } from "../interfaces/validationTagInterfaces";
+import { ValidationTagInsertion, ValidationTagUpdate, ValidationTagListingOptions } from "../interfaces/validationTagInterfaces";
 import { addValidationTagToTestCase } from "./testCaseService";
 const qs = require('qs');
 const TestSuite = require('../model/TestSuite').TestSuite;
@@ -307,4 +307,18 @@ export async function getValidationTagsForTestSuite(filters: ValidationTagListin
     } catch (err: unknown) {
         throw err;
     }
+}
+
+export async function updateValidationTag(validationTagId: string, reqBody: ValidationTagUpdate) {
+    try {
+        const updatedValidationTag = await validationTagModel.findByIdAndUpdate(validationTagId, reqBody, { new: true });
+        if (!updatedValidationTag) {
+            throw new NotFoundError(`Validation tag with id ${validationTagId} not found!`);
+        }
+        return updatedValidationTag;
+
+    } catch (err: unknown) {
+        throw err;
+    }
+
 }

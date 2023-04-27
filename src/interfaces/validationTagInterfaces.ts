@@ -6,6 +6,10 @@ export interface ValidationTagInsertion {
     parent?: object
 }
 
+export interface ValidationTagUpdate {
+    isSuccessful?: boolean,
+}
+
 export interface ValidationTagListingOptions extends ListingOptions {
     metaData?: object,
     testCase?: {
