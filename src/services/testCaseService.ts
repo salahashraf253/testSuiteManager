@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { TestCaseInsertion, TestCaseListingOptions } from "../interfaces/testCaseInterfaces";
+import { TestCaseInsertion, TestCaseListingOptions, TestCaseUpdate } from "../interfaces/testCaseInterfaces";
 import testCaseModel from "../model/TestCase";
 import { LinkingResourcesError, NotFoundError } from "../shared/errors";
 import { _idToid } from "../shared/utils";
@@ -97,3 +97,14 @@ export async function listTestCases(listingOptions: TestCaseListingOptions) {
 }
 
 
+export async function updateTestCase(testCaseId: string, updateData: TestCaseUpdate) {
+    try {
+        const testCase = await testCaseModel.findByIdAndUpdate(testCaseId, updateData, { new: true,  fields: { __v: false, validationTagRefs: false }})
+        if(!testCase) {
+            throw new NotFoundError(`Test Case with id '${testCaseId}' was not found!`)
+        }
+        return _idToid(testCase.toJSON())
+    } catch(err: unknown) {
+        throw err
+    }
+}

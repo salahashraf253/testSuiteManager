@@ -1,6 +1,6 @@
 
 import express from 'express'
-import { getTestCaseById, insertTestCase, listTestCases } from '../services/testCaseService'
+import { getTestCaseById, insertTestCase, listTestCases, updateTestCase } from '../services/testCaseService'
 import { TestCaseInsertion, TestCaseListingOptions } from '../interfaces/testCaseInterfaces'
 import { NotFoundError } from '../shared/errors'
 
@@ -41,5 +41,22 @@ export async function listingTestCases(req: express.Request, res: express.Respon
         res.status(200).send(testCases)
     } catch (err: unknown) {
         res.status(500).send({ error: 'Server Error' })
+    }
+}
+
+
+export async function updatingTestCase(req: express.Request, res: express.Response) {
+
+    const { testCaseId } = req.params
+    const updateData = req.body
+    try {
+        const testCase = await updateTestCase(testCaseId, updateData)
+        res.status(200).send(testCase)
+    } catch (err: unknown) {
+        if(err instanceof NotFoundError) {
+            res.status(err.status).send({ msg: err.message })
+        } else {
+            res.status(500).send()
+        }
     }
 }

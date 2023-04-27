@@ -52,6 +52,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/testCaseResponse'
+    patch:
+      tags:
+        - TestCase         
+      summary: Creates a new TestCase linked to a TestSuite
+      produces:
+      - application/json
+      parameters:    
+      - in: path
+        name: testCaseId
+        schema:
+          type: string
+          required: True
+          description: Id of the testCase
+      requestBody:          
+        name: update test case     
+        description: It enables a user to update a testCase
+        required: True
+        content:
+          application/json:
+            schema:          
+              $ref: '#/definitions/updateTestCase' 
+
+      responses:      
+        200:
+          description: An object with testCase details
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/testCaseResponse'
 
   /testCases/:
     get:                 
@@ -134,3 +163,10 @@ definitions:        # Schema defination for request body
               id:
                 type: string
                 example: 507f1f77bcf86cd799439011
+  updateTestCase:
+    type: object
+    properties:
+      isSuccessful:
+        type: boolean
+        default: false
+

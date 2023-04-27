@@ -12,3 +12,7 @@ export interface TestCaseListingOptions extends ListingOptions{
         id?: string
     }
 }
+
+export interface TestCaseUpdate {
+    isSuccessful?: boolean
+}
