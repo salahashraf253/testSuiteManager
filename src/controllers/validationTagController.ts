@@ -81,9 +81,12 @@ export async function fetchValidationTags(req: express.Request, res: express.Res
 }
 
 export async function fetchValidationTagsForTestCase(req: express.Request, res: express.Response) {
+    const parsedQuery = qs.parse(req.query, { allowDots: true });
+    const filters: ValidationTagListingOptions = parsedQuery;
+
     try {
         //TODO: query params and filters should be passed to the service
-        const validationTags = await getValidationTagsForTestCase();
+        const validationTags = await getValidationTagsForTestCase(filters);
         res.status(200).send(validationTags);
     } catch (err: unknown) {
         if (err instanceof NotFoundError || err instanceof LinkingResourcesError) {
@@ -96,9 +99,12 @@ export async function fetchValidationTagsForTestCase(req: express.Request, res: 
 }
 
 export async function fetchValidationTagsForTestSuite(req: express.Request, res: express.Response) {
+    const parsedQuery = qs.parse(req.query, { allowDots: true });
+    const filters: ValidationTagListingOptions = parsedQuery;
+
     try {
         //TODO: query params and filters should be passed to the service
-        const validationTags = await getValidationTagsForTestSuite();
+        const validationTags = await getValidationTagsForTestSuite(filters);
         res.status(200).send(validationTags);
     } catch (err: unknown) {
         if (err instanceof NotFoundError || err instanceof LinkingResourcesError) {
