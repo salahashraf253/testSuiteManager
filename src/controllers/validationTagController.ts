@@ -5,10 +5,13 @@ import {
     getValidationTag,
     getValidationTags,
     getValidationTagsForTestCase,
-    getValidationTagsForTestSuite
+    getValidationTagsForTestSuite,
+    updateValidationTag
 } from '../services/validationTagService'
-import { ValidationTagInsertion } from '../interfaces/validationTagInterfaces'
+import { ValidationTagInsertion, ValidationTagListingOptions, ValidationTagUpdate } from '../interfaces/validationTagInterfaces'
 import { LinkingResourcesError, NotFoundError } from '../shared/errors'
+const qs = require('qs');
+
 
 export async function createValidationTagForTestCase(req: express.Request, res: express.Response) {
 
@@ -62,9 +65,11 @@ export async function fetchValidationTag(req: express.Request, res: express.Resp
 }
 
 export async function fetchValidationTags(req: express.Request, res: express.Response) {
+    const parsedQuery = qs.parse(req.query, { allowDots: true });
+    console.log(parsedQuery)
+    const filters: ValidationTagListingOptions = parsedQuery;
     try {
-        //TODO: query params and filters should be passed to the service
-        const validationTags = await getValidationTags();
+        const validationTags = await getValidationTags(filters);
         res.status(200).send(validationTags);
     } catch (err: unknown) {
         if (err instanceof NotFoundError || err instanceof LinkingResourcesError) {
@@ -77,9 +82,12 @@ export async function fetchValidationTags(req: express.Request, res: express.Res
 }
 
 export async function fetchValidationTagsForTestCase(req: express.Request, res: express.Response) {
+    const parsedQuery = qs.parse(req.query, { allowDots: true });
+    const filters: ValidationTagListingOptions = parsedQuery;
+
     try {
         //TODO: query params and filters should be passed to the service
-        const validationTags = await getValidationTagsForTestCase();
+        const validationTags = await getValidationTagsForTestCase(filters);
         res.status(200).send(validationTags);
     } catch (err: unknown) {
         if (err instanceof NotFoundError || err instanceof LinkingResourcesError) {
@@ -92,10 +100,29 @@ export async function fetchValidationTagsForTestCase(req: express.Request, res: 
 }
 
 export async function fetchValidationTagsForTestSuite(req: express.Request, res: express.Response) {
+    const parsedQuery = qs.parse(req.query, { allowDots: true });
+    const filters: ValidationTagListingOptions = parsedQuery;
+
     try {
         //TODO: query params and filters should be passed to the service
-        const validationTags = await getValidationTagsForTestSuite();
+        const validationTags = await getValidationTagsForTestSuite(filters);
         res.status(200).send(validationTags);
+    } catch (err: unknown) {
+        if (err instanceof NotFoundError || err instanceof LinkingResourcesError) {
+            res.status(err.status).send({ message: err.message });
+        } else {
+            res.status(500).send({ message: 'Server Error' });
+        }
+    }
+}
+
+export async function changeValidationTag(req: express.Request, res: express.Response) {
+    const validationTagId = req.params.validationTagId;
+    const validationTagInfo: ValidationTagUpdate = req.body;
+
+    try {
+        const updatedValidationTag = await updateValidationTag(validationTagId, validationTagInfo);
+        res.status(200).send(updatedValidationTag);
     } catch (err: unknown) {
         if (err instanceof NotFoundError || err instanceof LinkingResourcesError) {
             res.status(err.status).send({ message: err.message });
