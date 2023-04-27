@@ -7,10 +7,15 @@ import swaggerJsdoc from "swagger-jsdoc";
 import TestSuiteRoutes from "./routes/TestSuiteRoutes";
 import { testCaseRouter }  from "./routes/testCaseRoutes";
 import { validationTagRouter } from "./routes/validationTagRoutes";
-
+import qs from 'qs'
 export function createApp() {
   const app = express();
 
+  app.set('query parser', (str: string) => {
+    return qs.parse(str, {
+      allowDots: true
+    })
+  })
   buildDatabase();
 
   app.use(express.json({
