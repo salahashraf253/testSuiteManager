@@ -50,6 +50,16 @@ export async function addTestSuite(request: express.Request, response: express.R
     }   
 }
 
+export async function updateTestSuiteById(request: express.Request, response: express.Response) {
+    const id = request.params.id;
+    const filter= {"_id": id};
+    const update = request.body;
+    TestSuite.updateOne(filter, {$set:update}).then(() => {
+        return response.status(200).json({ message: "TestSuite updated" });
+    }).catch((err: any) => {
+        return response.status(500).json({ message: err.message });
+    });
+}
 export async function deleteTestSuiteById(request: express.Request, response: express.Response) {
     //TODO: delete all validation tags & test cases  associated with this test suite
     const id = request.params.id;
