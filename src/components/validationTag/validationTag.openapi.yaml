@@ -106,6 +106,43 @@ paths:
               schema:
                 $ref: '#/definitions/validationTagErrorResponse'
   
+    patch:
+      tags:
+        - ValidationTag        
+      summary: Updates a validation tag by its ID
+      produces:
+      - application/json
+      parameters:    
+      - in: path
+        name: validationTagId
+        description: Id of validation tag to be updated
+        required: True
+        schema:
+          type: string
+      requestBody:          
+        description: Enables updating validation tag details
+        required: True
+        content:
+          application/json:
+            schema:          
+              $ref: '#/definitions/validationTagUpdateRequest' 
+
+      responses:      
+        200:
+          description: Validation tag with `validationTagId` is updated successfully (returns updated validation tag)
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagUpdateResponse'
+        404:
+          description: Validation tag with `validationTagId` does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/validationTagErrorResponse'
+
+
+  
   /validationTags:
     get:                 
       tags:            
@@ -419,5 +456,45 @@ definitions: # Schema defination for request body
       #           example: 2225659qafksj6556adfasdf
       body:
         type: object
+    
+  validationTagUpdateRequest:
+    type: object
+    properties:
+      isSuccessful:
+        type: boolean
+        example: true
+
+  validationTagUpdateResponse:
+    type: object
+    properties:
+      id: 
+        type: string
+        example: 507f1f77bcf86cd799439011
+      isSuccessful:
+        type: boolean
+        example: true
+      metaData:
+        type: object
+      parent: 
+        type: object
+        properties:
+          testCase:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 50879873145dfbqe4f5f4f5f
+          testSuite:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 507f1f77bcf86cd799439011
+      validationPointRefs:
+        type: array
+        items:
+          type: string
+          example: 163f1f77bcf86cd799479054
+          
       
       

@@ -82,6 +82,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/definitions/TestSuiteErrorResponse'
+    patch:
+      tags:
+        - TestSuite         
+      summary: update test suite by it's id 
+      produces:
+      - application/json
+      parameters:    
+      - in: path
+        name: id 
+        schema:
+          type: string
+          required: True
+          # description: Id of the testSuite
+      requestBody:          
+        name: update test case     
+        description: It enables a user to update a testCase
+        required: True
+        content:
+          application/json:
+            schema:          
+              $ref: '#/definitions/TestSuiteUpdateRequest' 
+
+      responses:      
+        200:
+          description: An object with testsuite details
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/TestSuiteUpdateResponse'
+        400:
+          description: test suite id is not found 
+          content:
+           application/json:
+              schema:
+                $ref: '#/definitions/TestSuiteUpadteErrorResponse'
 
 definitions: # Schema defination for request body
   TestSuite:
@@ -112,5 +147,30 @@ definitions: # Schema defination for request body
       message:
         type: string
         example: error message
+  TestSuiteUpadteErrorResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        example: test suite id is not found 
+
+  TestSuiteUpdateRequest:
+    type: object
+    properties:
+      isSuccessful:
+        type: boolean
+        example: true
+
+  TestSuiteUpdateResponse:
+    type: object
+    properties:
+      isSuccessful:
+        type: boolean
+        example: true
+      metaData:
+        type: object
+      id: 
+        type: string
+        example: 507f1f77bcf86cd799439011
                 
   

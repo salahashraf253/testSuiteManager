@@ -65,9 +65,8 @@ export async function fetchValidationTag(req: express.Request, res: express.Resp
 }
 
 export async function fetchValidationTags(req: express.Request, res: express.Response) {
-    const parsedQuery = qs.parse(req.query, { allowDots: true });
-    console.log(parsedQuery)
-    const filters: ValidationTagListingOptions = parsedQuery;
+    console.log(req.query)
+    const filters: ValidationTagListingOptions = req.query;
     try {
         const validationTags = await getValidationTags(filters);
         res.status(200).send(validationTags);
@@ -82,11 +81,10 @@ export async function fetchValidationTags(req: express.Request, res: express.Res
 }
 
 export async function fetchValidationTagsForTestCase(req: express.Request, res: express.Response) {
-    const parsedQuery = qs.parse(req.query, { allowDots: true });
-    const filters: ValidationTagListingOptions = parsedQuery;
+    console.log(req.query)
+    const filters: ValidationTagListingOptions = req.query;
 
     try {
-        //TODO: query params and filters should be passed to the service
         const validationTags = await getValidationTagsForTestCase(filters);
         res.status(200).send(validationTags);
     } catch (err: unknown) {
@@ -100,11 +98,10 @@ export async function fetchValidationTagsForTestCase(req: express.Request, res: 
 }
 
 export async function fetchValidationTagsForTestSuite(req: express.Request, res: express.Response) {
-    const parsedQuery = qs.parse(req.query, { allowDots: true });
-    const filters: ValidationTagListingOptions = parsedQuery;
+    console.log(req.query)
+    const filters: ValidationTagListingOptions = req.query;
 
     try {
-        //TODO: query params and filters should be passed to the service
         const validationTags = await getValidationTagsForTestSuite(filters);
         res.status(200).send(validationTags);
     } catch (err: unknown) {

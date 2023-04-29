@@ -40,12 +40,17 @@ export async function insertValidationTagForTestCase(testSuiteId: string, testCa
             }
         };
         const validationTag = await validationTagModel.create(validationTagInfo);
-        console.log(validationTag);
-        validationTagId = validationTag._id;
+
+        // Remove __v and validationPointRefs from validationTag
+        validationTag.__v = undefined;
+        const { validationPointRefs, ...validationTagReturned } = validationTag.toJSON();
+
+        console.log(validationTagReturned);
+        validationTagId = validationTagReturned._id;
 
         // Add validation tag id to test case in the database
         await addValidationTagToTestCase(testCaseId, { id: validationTagId });
-        return _idToid(validationTag.toJSON())
+        return _idToid(validationTagReturned)
 
     } catch (err: unknown) {
         console.log(err);
@@ -73,12 +78,17 @@ export async function insertValidationTagForTestSuite(testSuiteId: string, valid
             }
         };
         const validationTag = await validationTagModel.create(validationTagInfo);
-        console.log(validationTag);
-        validationTagId = validationTag._id;
+
+        // Remove __v and validationPointRefs from validationTag
+        validationTag.__v = undefined;
+        const { validationPointRefs, ...validationTagReturned } = validationTag.toJSON();
+
+        console.log(validationTagReturned);
+        validationTagId = validationTagReturned._id;
 
         // Add validation tag id to test suite in the database
         await addValidationTagToTestSuite(testSuiteId, { id: validationTagId });
-        return _idToid(validationTag.toJSON())
+        return _idToid(validationTagReturned)
 
     } catch (err: unknown) {
         console.log(err);
@@ -311,11 +321,11 @@ export async function getValidationTagsForTestSuite(filters: ValidationTagListin
 
 export async function updateValidationTag(validationTagId: string, reqBody: ValidationTagUpdate) {
     try {
-        const updatedValidationTag = await validationTagModel.findByIdAndUpdate(validationTagId, reqBody, { new: true });
+        const updatedValidationTag = await validationTagModel.findByIdAndUpdate(validationTagId, reqBody, { new: true, select: '-__v' });
         if (!updatedValidationTag) {
             throw new NotFoundError(`Validation tag with id ${validationTagId} not found!`);
         }
-        return updatedValidationTag;
+        return _idToid(updatedValidationTag.toJSON());
 
     } catch (err: unknown) {
         throw err;
