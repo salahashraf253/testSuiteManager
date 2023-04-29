@@ -57,7 +57,7 @@ export async function updateTestSuiteById(request: express.Request, response: ex
     TestSuite.updateOne(filter, {$set:update}).then(() => {
         return response.status(200).json({ message: "TestSuite updated" });
     }).catch((err: any) => {
-        return response.status(500).json({ message: err.message });
+        return response.status(400).json({ message: err.message });
     });
 }
 export async function deleteTestSuiteById(request: express.Request, response: express.Response) {
